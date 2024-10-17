@@ -37,7 +37,7 @@ export class BookService {
     title: string,
     publishYear: number,
     authorId: number,
-    isbn: string,
+    isbn: string
   ): Promise<BookOutputDTO> {
     try {
       let book = await Book.create({
@@ -61,7 +61,7 @@ export class BookService {
     title?: string,
     publishYear?: number,
     authorId?: number,
-    isbn?: string,
+    isbn?: string
   ): Promise<BookOutputDTO> {
     const book = await Book.findByPk(id);
     if (book) {
@@ -97,7 +97,7 @@ export class BookService {
         const error = new Error(
           "Deletion of book " +
             id +
-            " isn't possible due to presence of his.er books in library",
+            " isn't possible due to presence of his.er books in library"
         );
         (error as any).status = 412;
         throw error;
@@ -110,15 +110,20 @@ export class BookService {
   }
 
   public async getBookCollectionsByBookId(
-    id: number,
+    id: number
   ): Promise<BookCollectionOutputDTO[]> {
     return BookCollectionMapper.toOutputDtoList(
       await BookCollection.findAll({
         where: {
           book_id: id,
         },
-      }),
+      })
     );
+  }
+
+  public async checkAuthorExists(authorId: number): Promise<boolean> {
+    const author = await Author.findByPk(authorId);
+    return author !== null;
   }
 }
 
