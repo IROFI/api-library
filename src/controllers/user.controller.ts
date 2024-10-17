@@ -7,7 +7,6 @@ import {
   Path,
   Post,
   Route,
-  Security,
   Tags,
 } from "tsoa";
 import {
@@ -19,7 +18,7 @@ import { userService } from "../services/user.service";
 
 @Route("users")
 @Tags("Users")
-@Security("jwt")
+//@Security("jwt")
 export class UserController extends Controller {
   // Récupère tous les utilisateurs
   @Get("/")
