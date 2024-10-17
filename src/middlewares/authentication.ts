@@ -6,22 +6,30 @@ export function expressAuthentication(
   securityName: string,
   scopes?: string[]
 ): Promise<any> {
-  if (securityName === /*clef du securityDefinition */) {
-    const token = //Récupérer le token
+  if (securityName === "jwt") {
+    const token =
+      request.body.token ||
+      request.query.token ||
+      request.headers["authorization"]?.split(" ")[1];
 
     return new Promise((resolve, reject) => {
       if (!token) {
-        reject(/*throw error no token*/);
+        reject(new Error("No token provided"));
       }
       jwt.verify(
         token,
-        /*your secret*/,
+        "your_jwt_secret_key",
         function (err: any, decoded: any) {
           if (err) {
             reject(err);
           } else {
             if (scopes !== undefined) {
-              //Custom verif
+              // Check if JWT contains all required scopes
+              for (let scope of scopes) {
+                if (!decoded.scopes.includes(scope)) {
+                  reject(new Error("JWT does not contain required scope."));
+                }
+              }
             }
             resolve(decoded);
           }
@@ -29,6 +37,6 @@ export function expressAuthentication(
       );
     });
   } else {
-    /* throw error not found securityDefinition*/
+    throw new Error("Only support JWT securityName");
   }
 }
